@@ -2,7 +2,7 @@
 	"id": "hqshaders",
 	"name": "HQ Shaders",
 	"author": ["baltdev"],
-	"description": "Ports the high quality shaders of Bunco, and rounds the corners of boxes.",
+	"description": "Ports the high quality shaders of Bunco, and rounds the corners of boxes. Also removes the background going grey in Endless.",
 	"prefix": "hqshaders",
 	"main_file": "main.lua", 
 	"badge_colour": "ff9090",
