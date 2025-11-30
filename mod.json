@@ -1,0 +1,11 @@
+{
+	"id": "hqshaders",
+	"name": "HQ Shaders",
+	"author": ["baltdev"],
+	"description": "Ports the high quality shaders of Bunco, and rounds the corners of boxes.",
+	"prefix": "hqshaders",
+	"main_file": "main.lua", 
+	"badge_colour": "ff9090",
+	"badge_text_colour": "FFFFFF", 
+	"version": "1.0.0", 
+}

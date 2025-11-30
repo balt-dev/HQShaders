@@ -1,0 +1,13 @@
+[manifest]
+version = "1.0.0"
+priority = 0
+
+[[patches]]
+[patches.regex]
+target = "functions/common_events.lua"
+pattern = '''
+\s*elseif G\.GAME\.won then\s*ease_background_colour\{new_colour = G\.C\.BLIND\.won, contrast = 1\}
+'''
+position = "at"
+payload = ""
+match_indent = true
