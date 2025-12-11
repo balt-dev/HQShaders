@@ -1,0 +1,84 @@
+[manifest]
+version = "1.0.0"
+priority = 0
+
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = "G.SHADERS['CRT']:send('distortion_fac', {1.0 + 0.07*G.SETTINGS.GRAPHICS.crt/100, 1.0 + 0.1*G.SETTINGS.GRAPHICS.crt/100})"
+position = "at"
+payload = "G.SHADERS['CRT']:send('distortion_fac', {1.0 + 0.07*HQSHADERS.config.crt_distortion, 1.0 + 0.1*HQSHADERS.config.crt_distortion})"
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = "G.SHADERS['CRT']:send('scale_fac', {1.0 - 0.008*G.SETTINGS.GRAPHICS.crt/100, 1.0 - 0.008*G.SETTINGS.GRAPHICS.crt/100})"
+position = "at"
+payload = "G.SHADERS['CRT']:send('scale_fac', {1.0 - 0.008*HQSHADERS.config.crt_distortion, 1.0 - 0.008*HQSHADERS.config.crt_distortion})"
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = "G.SHADERS['CRT']:send('feather_fac', 0.01)"
+position = "at"
+payload = "G.SHADERS['CRT']:send('feather_fac', 0.01 * ((HQSHADERS.config.crt_feathering and 1) or 0))"
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = "G.SHADERS['CRT']:send('bloom_fac', G.SETTINGS.GRAPHICS.bloom - 1)"
+position = "at"
+payload = """
+G.SHADERS['CRT']:send('hqs_color_correction', HQSHADERS.config.color)
+G.SHADERS['CRT']:send('hqs_bloom_fac', HQSHADERS.config.crt_bloom / 5)
+G.SHADERS['CRT']:send('hqs_bloom_cutoff', HQSHADERS.config.crt_bloom_cutoff)
+G.SHADERS['CRT']:send('hqs_bloom_distance', HQSHADERS.config.crt_bloom_distance)
+"""
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = "G.SHADERS['CRT']:send('noise_fac',0.001*G.SETTINGS.GRAPHICS.crt/100)"
+position = "at"
+payload = "G.SHADERS['CRT']:send('noise_fac',HQSHADERS.config.crt_noise)"
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = "G.SHADERS['CRT']:send('crt_intensity', 0.16*G.SETTINGS.GRAPHICS.crt/100)"
+position = "at"
+payload = "G.SHADERS['CRT']:send('crt_intensity', 0.16*HQSHADERS.config.crt_scanline)"
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = """
+      create_slider({label = localize('b_set_CRT'),w = 4, h = 0.4, ref_table = G.SETTINGS.GRAPHICS, ref_value = 'crt', min = 0, max = 100}),
+      create_option_cycle({w = 4,scale = 0.8, label = localize("b_set_CRT_bloom"),options = localize('ml_bloom_opt'), opt_callback = 'change_crt_bloom', current_option = G.SETTINGS.GRAPHICS.bloom}),
+"""
+position = "at"
+payload = ""
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = """
+      create_option_cycle({w = 4,scale = 0.8, label = localize("b_set_shadows"),options = localize('ml_shadow_opt'), opt_callback = 'change_shadows', current_option = (G.SETTINGS.GRAPHICS.shadows == 'On' and 1 or 2)}),
+"""
+position = "before"
+payload = """
+	{n = G.UIT.R, config = {align="cm"}, nodes = {
+      	{n = G.UIT.R, config = {align="cm"}, nodes = {{n = G.UIT.T, config = {text = localize("k_hqshader_crt_notice1"), scale = 0.4, colour = G.C.UI.TEXT_LIGHT, minh = 0.4, minw=0}}}},
+      	{n = G.UIT.R, config = {align="cm"}, nodes = {{n = G.UIT.T, config = {text = localize("k_hqshader_crt_notice2"), scale = 0.4, colour = G.C.UI.TEXT_LIGHT, minh = 0.4, minw=0}}}},
+      	{n = G.UIT.R, config = {align="cm"}, nodes = {{n = G.UIT.T, config = {text = localize("k_hqshader_crt_notice3"), scale = 0.4, colour = G.C.UI.TEXT_LIGHT, minh = 0.4, minw=0}}}},
+      	{n = G.UIT.R, config = {minh=0.5}},
+	}},
+"""
+match_indent = true
