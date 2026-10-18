@@ -7,6 +7,7 @@
 extern MY_HIGHP_OR_MEDIUMP number time;
 extern MY_HIGHP_OR_MEDIUMP vec2 distortion_fac;
 extern MY_HIGHP_OR_MEDIUMP vec2 scale_fac;
+extern MY_HIGHP_OR_MEDIUMP number bloom_fac;
 extern MY_HIGHP_OR_MEDIUMP number feather_fac;
 extern MY_HIGHP_OR_MEDIUMP number noise_fac;
 extern MY_HIGHP_OR_MEDIUMP number hqs_bloom_distance;
@@ -68,7 +69,7 @@ vec4 effect(vec4 color, Image tex, vec2 tc, vec2 pc)
                 + sin(-timefac*0.9661 + tc.y*21.532)
                 + sin(timefac*0.4423 + tc.y*20.3)
                 + sin(-timefac*0.13321312 + tc.y*5.0));
-        }  
+        }
         tc.x = tc.x + 0.001*glitch_intensity*clamp(offset_l, clamp(offset_r, -1.0, 0.0), 1.0);
     }
 
@@ -93,13 +94,13 @@ vec4 effect(vec4 color, Image tex, vec2 tc, vec2 pc)
     }
 
     //Add the pixel scanline overlay, a repeated 'pixel' mask that doesn't actually render the real image. If these pixels were used to render the image it would be too harsh
-	MY_HIGHP_OR_MEDIUMP vec3 rgb_scanline = 1.0*vec3( 
+	MY_HIGHP_OR_MEDIUMP vec3 rgb_scanline = 1.0*vec3(
         clamp(-0.3+2.0*sin( tc.y * scanlines-3.14/4.0) - 0.8*clamp(sin( tc.x*scanlines*4.0), 0.4, 1.0), -1.0, 2.0),
         clamp(-0.3+2.0*cos( tc.y * scanlines) - 0.8*clamp(cos( tc.x*scanlines*4.0), 0.0, 1.0), -1.0, 2.0),
         clamp(-0.3+2.0*cos( tc.y * scanlines -3.14/3.0) - 0.8*clamp(cos( tc.x*scanlines*4.0-3.14/4.0), 0.0, 1.0), -1.0, 2.0));
-	
+
 	rgb_result += crt_tex.rgb * rgb_scanline * crt_intensity * artifact_amplifier;
-	
+
     //Add in some noise
     MY_HIGHP_OR_MEDIUMP number x = random(vec3(floor(pc.x / 2.0), floor(pc.y / 2.0), time));
 	rgb_result = (1.0-clamp( noise_fac, 0.0,1.0 ))*rgb_result + x * clamp( noise_fac, 0.0,1.0 );
@@ -125,10 +126,10 @@ vec4 effect(vec4 color, Image tex, vec2 tc, vec2 pc)
             samp.g = max(1./(1.-cutoff)*samp.g - 1./(1.-cutoff) + 1., 0.);
             samp.b = max(1./(1.-cutoff)*samp.b - 1./(1.-cutoff) + 1., 0.);
             col += min(min(samp.r,samp.g),samp.b) * (hqs_bloom_distance - float(abs(i)));
-        }   
+        }
 
         col /= float(hqs_bloom_distance);
-        col *= hqs_bloom_fac;
+        col *= hqs_bloom_fac + bloom_fac * 0.0001f;
         col.a = final_col.a;
     }
 
